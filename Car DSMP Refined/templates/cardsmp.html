@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Car Price Prediction</title>
+    <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            margin: 10px;
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-attachment: fixed;
+            background-position: center;
+
+        }
+
+        h1 {
+            font-family: Arial, Helvetica, sans-serif;
+            text-align: center;
+            color: white;
+        }
+
+        form {
+            margin: 0 auto;
+            max-width: 400px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: white;
+            background-color: black;
+        }
+
+        select,
+        input[type="text"] {
+            width: 100%;
+            height: 50px;
+            border: none;
+            padding-left: 4px;
+            padding-right: 0px;
+            margin-bottom: 8px;
+            border-radius: 10px;
+            color: white;
+            background-color: black;
+            box-shadow: 0px 0px 50px rgb(58, 98, 153);
+        }
+
+        input[type="submit"] {
+            width: 100%;
+            padding: 16px;
+            font-weight: bold;
+            background-color: transparent;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 10px;
+            margin-top: 9px;
+        }
+
+        #prediction_result {
+            margin-top: 20px;
+            text-align: center;
+            font-weight: bold;
+            background-color:transparent;
+            color: white;
+        }
+        
+    </style>
+</head>
+
+<body
+    background="https://lh3.googleusercontent.com/J4DMBtRQaEp-NcZnZHeuW8hqDe0uRSRLTShlpZdJn7Syjx7ihsAWZt_iaVbCswuHG5_Onoi1pIm1lw39e9bBC2noV3irrTqy0SJiSFe7">
+    <h1>Car Price Predictor</h1>
+    <br>
+    
+    <form action="/predict" method="POST">
+        <label for="car_models">Select Your Car:</label>
+        <select name="car_models" id="ccar_models">
+            {% for car_models in car_models %}
+            <option value="{{ car_models}}">{{ car_models }}</option>
+            {% endfor %}
+        </select>
+
+        <br><br>
+
+
+        <label for="year">Year of Purchase:</label>
+        <select name="year" id="year">
+            {% for year in years %}
+            <option value="{{ year }}">{{ year }}</option>
+            {% endfor %}
+        </select>
+
+        <br><br>
+
+        <label for="fuel_type">Fuel Type:</label>
+        <select name="fuel_type" id="fuel_type">
+            {% for fuel_type in fuel_types %}
+            <option value="{{ fuel_type }}">{{ fuel_type }}</option>
+            {% endfor %}
+        </select>
+
+        <br><br>
+
+        <label for="kilo_driven">Kilometers Driven:</label>
+        <input type="text" name="kilo_driven" id="kilo_driven" autocomplete="off">
+
+        <br>
+        <input type="submit" value="Predict">
+    </form>
+    <br>
+
+    <div id="prediction_result"></div>
+
+    <script>
+        const form = document.querySelector('form');
+        const predictionResult = document.getElementById('prediction_result');
+
+        form.addEventListener('submit', function (event) {
+            event.preventDefault();
+
+            const formData = new FormData(form);
+            const xhr = new XMLHttpRequest();
+
+            xhr.open('POST', '/predict', true);
+            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+
+            xhr.onload = function () {
+                if (xhr.status === 200) {
+                    predictionResult.innerText = `Predicted Price: ₹ ${xhr.responseText}`;
+                } else {
+                    predictionResult.innerText = '404';
+                }
+            };
+
+            xhr.send(new URLSearchParams(formData).toString());
+        });
+    </script>
+</body>
+
+</html>
